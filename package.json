@@ -2,8 +2,8 @@
   "name": "pg-simple-migrations",
   "version": "0.3.1",
   "description": "PostgreSQL simply database migrations tool",
-  "main": "src/index.js",
-  "repository": "stankaraban/pg-simple-migrations",
+  "main": "index.js",
+  "homepage": "https://github.com/stankaraban/pg-simple-migrations#readme",
   "scripts": {
     "standard": "standard"
   },
@@ -11,10 +11,15 @@
   "license": "MIT",
   "dependencies": {
     "dayjs": "^1.8.18",
+    "esm": "^3.2.25",
     "pg": "^7.12.1"
   },
   "devDependencies": {
     "standard": "^14.3.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stankaraban/pg-simple-migrations.git"
   },
   "keywords": [
     "pg",

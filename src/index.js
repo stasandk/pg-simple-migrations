@@ -1,9 +1,9 @@
 'use strict'
 
 // Import Postgres db
-const { Pool } = require('pg')
-const path = require('path')
-const { readFile, getFiles, getChecksum, rename, now } = require('./utils')
+import { Pool } from 'pg'
+import path from 'path'
+import { readFile, getFiles, getChecksum, rename, now } from './utils'
 
 // Default pg values
 const defaultConnection = {
