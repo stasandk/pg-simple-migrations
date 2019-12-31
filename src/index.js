@@ -30,7 +30,6 @@ module.exports = class Migration {
 
     // Ini postgres database
     this.pg = new Pool(this.connection)
-    this.pg.on('error', this.emit.bind(this))
   }
 
   // Insert migration table to the database
