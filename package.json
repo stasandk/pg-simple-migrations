@@ -1,6 +1,6 @@
 {
-  "name": "@sk/pg-migrations",
-  "version": "1.0.0",
+  "name": "pg-simple-migrations",
+  "version": "0.2.0",
   "description": "PostgreSQL simply database migrations tool",
   "main": "src/index.js",
   "scripts": {

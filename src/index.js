@@ -23,6 +23,7 @@ module.exports = class Migration {
     this.connection = connection || defaultConnection
 
     // Find user migrations folder
+    this.migrationsTableSqlPath = './sql/migrations.sql'
     this.localMigrationsPath = path.join(__dirname, migrationsDir || './')
     this.localMigrations = []
     this.dbMigrations = []
@@ -34,7 +35,7 @@ module.exports = class Migration {
   // Insert migration table to the database
   async insertMigrationsTable () {
     try {
-      const sqlFile = await readFile('./sql/migrations.sql')
+      const sqlFile = await readFile(this.migrationsTableSqlPath)
       await this.pg.query(sqlFile)
       console.log('Migrations table created succesfully!')
     } catch (err) {
@@ -44,7 +45,7 @@ module.exports = class Migration {
 
   // Get local migration files
   async getLocalMigrations () {
-    this.localMigrations = await getFiles('../migrations') // this.localMigrationsPath
+    this.localMigrations = await getFiles(this.localMigrationsPath)
     if (this.localMigrations.length <= 0) throw new Error('No files found in \'migrations\' folder')
   }
 
@@ -61,7 +62,7 @@ module.exports = class Migration {
   checkMigrations () {
     this.localMigrations.forEach(async filename => {
       // Generate checksum of file
-      const checksum = getChecksum(readFile(`../migrations/${filename}`))
+      const checksum = getChecksum(readFile(`${this.localMigrationsPath}/${filename}`))
 
       // Check if exist database migration in local migrations folder
       const dbMigration = this.dbMigrations.filter(migration => migration.filename === filename)
@@ -87,7 +88,7 @@ module.exports = class Migration {
     try {
       await client.query('BEGIN')
 
-      const sqlFile = await readFile(`../migrations/${filename}`)
+      const sqlFile = await readFile(`${this.localMigrationsPath}/${filename}`)
       await client.query(sqlFile)
 
       const query = `
@@ -106,8 +107,11 @@ module.exports = class Migration {
   }
 
   async migrate () {
-    await this.createSchema()
-    await this.getSqlFiles()
-    this.commitSql()
+    await this.insertMigrationsTable()
+    await this.getLocalMigrations()
+    await this.getDbMigrations()
+
+    this.checkMigrations()
+    console.log('Done!')
   }
 }
