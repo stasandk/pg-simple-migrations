@@ -1,6 +1,6 @@
 {
   "name": "pg-simple-migrations",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "PostgreSQL simply database migrations tool",
   "main": "-r esm index.js",
   "homepage": "https://github.com/stankaraban/pg-simple-migrations#readme",
