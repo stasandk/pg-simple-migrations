@@ -1,8 +1,9 @@
 {
   "name": "pg-simple-migrations",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "PostgreSQL simply database migrations tool",
   "main": "src/index.js",
+  "repository": "stankaraban/pg-simple-migrations",
   "scripts": {
     "standard": "standard"
   },
@@ -14,5 +15,13 @@
   },
   "devDependencies": {
     "standard": "^14.3.1"
-  }
+  },
+  "keywords": [
+    "pg",
+    "npm",
+    "package",
+    "simple",
+    "migrations",
+    "database"
+  ]
 }
