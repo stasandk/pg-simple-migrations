@@ -1,6 +1,5 @@
 'use strict'
 
-const path = require('path')
 const fs = require('fs')
 const crypto = require('crypto')
 const dayjs = require('dayjs')
@@ -8,10 +7,9 @@ const utc = require('dayjs/plugin/utc')
 
 dayjs.extend(utc)
 
-exports.getFiles = route => {
-  const filePath = path.join(__dirname, route)
+exports.getFiles = path => {
   return new Promise((resolve, reject) => {
-    fs.readdir(filePath, (err, files) => {
+    fs.readdir(path, (err, files) => {
       if (err) reject(err)
       files = files.sort()
       resolve(files)
@@ -19,10 +17,9 @@ exports.getFiles = route => {
   })
 }
 
-exports.readFile = route => {
-  const filePath = path.join(__dirname, route)
+exports.readFile = path => {
   return new Promise((resolve, reject) => {
-    fs.readFile(filePath, 'utf8', (err, data) => {
+    fs.readFile(path, 'utf8', (err, data) => {
       if (err) reject(err)
       resolve(data)
     })
