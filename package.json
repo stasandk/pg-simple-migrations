@@ -1,0 +1,15 @@
+{
+  "name": "@sk/pg-migrations",
+  "version": "1.0.0",
+  "description": "PostgreSQL simply migration tool",
+  "main": "src/index.js",
+  "scripts": {
+    "migrate": "node src"
+  },
+  "author": "Stanislau Karaban",
+  "license": "MIT",
+  "dependencies": {
+    "dayjs": "^1.8.18",
+    "pg": "^7.12.1"
+  }
+}
