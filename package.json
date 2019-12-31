@@ -4,12 +4,15 @@
   "description": "PostgreSQL simply database migrations tool",
   "main": "src/index.js",
   "scripts": {
-    "migrate": "node src"
+    "standard": "standard"
   },
   "author": "Stanislau Karaban",
   "license": "MIT",
   "dependencies": {
     "dayjs": "^1.8.18",
     "pg": "^7.12.1"
+  },
+  "devDependencies": {
+    "standard": "^14.3.1"
   }
 }
