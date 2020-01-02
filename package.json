@@ -3,7 +3,7 @@
   "version": "0.3.5",
   "description": "PostgreSQL simply database migrations tool",
   "main": "index.js",
-  "homepage": "https://github.com/stankaraban/pg-simple-migrations#readme",
+  "homepage": "https://github.com/stasandk/pg-simple-migrations#readme",
   "scripts": {
     "standard": "standard"
   },
@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/stankaraban/pg-simple-migrations.git"
+    "url": "git+https://github.com/stasandk/pg-simple-migrations.git"
   },
   "keywords": [
     "pg",
