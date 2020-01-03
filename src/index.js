@@ -1,5 +1,3 @@
-'use strict'
-
 // Import Postgres db
 import { Pool } from 'pg'
 import path from 'path'
@@ -14,7 +12,7 @@ const defaultConnection = {
   port: 5432
 }
 
-module.exports = class Migration {
+export class Migration {
   constructor ({ connection, migrationsDir }) {
     // Check migrationsDir is present
     if (!migrationsDir) throw new Error('Migrations folder not found')
