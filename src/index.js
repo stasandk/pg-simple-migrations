@@ -12,7 +12,7 @@ const defaultConnection = {
   port: 5432
 }
 
-export class Migration {
+module.exports = class Migration {
   constructor ({ connection, migrationsDir }) {
     // Check migrationsDir is present
     if (!migrationsDir) throw new Error('Migrations folder not found')
