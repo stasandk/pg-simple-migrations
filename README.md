@@ -9,6 +9,7 @@ $ npm install pg-simple-migrations
 ```
 
 ## Usage
+Create file **runmigration.js**
 
 ```js
 const PGMigrations = require('pg-simple-migrations')
@@ -34,7 +35,9 @@ async function run () {
 run()
 ```
 
-## Steps to migrate
+### Call this file when you want to migrate to database new .sql file
+
+## Steps
 1. Create folder where you will put all .sql migration files (Param: **migrationsDir**)
 
 2. Create .sql file where you sql code will be executed.
