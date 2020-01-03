@@ -12,7 +12,7 @@ const defaultConnection = {
   port: 5432
 }
 
-module.exports = class Migration {
+export class PGMigrations {
   constructor ({ connection, migrationsDir }) {
     // Check migrationsDir is present
     if (!migrationsDir) throw new Error('Migrations folder not found')
@@ -115,5 +115,6 @@ module.exports = class Migration {
     await this.getDbMigrations()
 
     await this.checkMigrations()
+    process.exit()
   }
 }

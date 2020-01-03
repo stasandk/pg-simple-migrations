@@ -12,7 +12,7 @@ $ npm install pg-simple-migrations
 Create file **runmigration.js**
 
 ```js
-const PGMigrations = require('pg-simple-migrations')
+const { PGMigrations } = require('pg-simple-migrations')
 
 // Postgres connection details
 const connection = {
