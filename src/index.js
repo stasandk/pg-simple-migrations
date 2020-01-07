@@ -115,6 +115,5 @@ export class PGMigrations {
     await this.getDbMigrations()
 
     await this.checkMigrations()
-    process.exit()
   }
 }
