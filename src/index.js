@@ -59,7 +59,7 @@ export class PGMigrations {
   async commitLocalMigration ({ filename, checksum }) {
     // If filename dont have 'xx_timestamp.sql' rename
     if (filename.split('_').length === 1) {
-      const newFilename = `${filename.replace('.sql', '')}_${now()}.sql`
+      const newFilename = `${now}_${filename}`
       await rename(`${this.localMigrationsPath}/${filename}`, `${this.localMigrationsPath}/${newFilename}`)
       filename = newFilename
     }
