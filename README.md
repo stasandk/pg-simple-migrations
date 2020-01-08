@@ -12,7 +12,7 @@ $ npm install pg-simple-migrations
 Create file **runmigration.js**
 
 ```js
-const { PGMigrations } = require('pg-simple-migrations')
+const { PGSM } = require('pg-simple-migrations')
 
 // Postgres connection details
 const connection = {
@@ -26,7 +26,7 @@ const connection = {
 // Folder where are all sql files. (Absolute path)
 const migrationsDir = './migrations'
 
-const migrations = new PGMigrations({ connection, migrationsDir })
+const migrations = new PGSM({ connection, migrationsDir })
 
 async function run () {
   await migrations.up()

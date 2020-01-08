@@ -1,7 +1,7 @@
 // Import Postgres db
 import { Pool } from 'pg'
 import path from 'path'
-import { readFile, getFiles, getChecksum, rename, now } from './utils'
+import * as utils from './utils'
 
 // Default pg values
 const defaultConnection = {
@@ -12,7 +12,7 @@ const defaultConnection = {
   port: 5432
 }
 
-export class PGMigrations {
+export class PGSM {
   constructor ({ connection, migrationsDir }) {
     // Check migrationsDir is present
     if (!migrationsDir) throw new Error('Migrations folder not found')
@@ -22,7 +22,7 @@ export class PGMigrations {
 
     // Find user migrations folder
     this.migrationsTableSqlPath = path.join(__dirname, '/sql/migrations.sql')
-    this.localMigrationsPath = path.join(__dirname.split('/node_modules/')[0], migrationsDir || './')
+    this.localMigrationsPath = path.join(__dirname.split('/node_modules/')[0], '../', migrationsDir || './')
     this.localMigrations = []
     this.dbMigrations = []
 
@@ -33,17 +33,11 @@ export class PGMigrations {
   // Insert migration table to the database
   async insertMigrationsTable () {
     try {
-      const sqlFile = await readFile(this.migrationsTableSqlPath)
+      const sqlFile = await utils.readFile(this.migrationsTableSqlPath)
       await this.pg.query(sqlFile)
     } catch (err) {
       throw new Error(err)
     }
-  }
-
-  // Get local migration files
-  async getLocalMigrations () {
-    this.localMigrations = await getFiles(this.localMigrationsPath)
-    if (this.localMigrations.length <= 0) throw new Error('No files found in \'migrations\' folder')
   }
 
   // Get database migrations data (filename, checksum)
@@ -52,32 +46,77 @@ export class PGMigrations {
       SELECT filename, checksum
       FROM migrations`
     const data = await this.pg.query(query)
-    this.dbMigrations = data.rows
+    return data.rows
+  }
+
+  // Get local migration files
+  async getLocalMigrations () {
+    const localMigrations = await utils.getFiles(this.localMigrationsPath)
+    if (localMigrations.length <= 0) throw new Error('No files found in \'migrations\' folder')
+
+    return Promise.all(localMigrations.map(async filename => {
+      // Check local file
+      if (filename.split('_').length > 2) throw new Error(`${filename} incorrect filename (Max 1 underscore allowed)`)
+
+      // Build file params
+      const fileContent = await utils.readFile(`${this.localMigrationsPath}/${filename}`)
+      const checksum = await utils.getChecksum(fileContent)
+      const filePath = this.localMigrationsPath + '/' + filename
+      return { filename, fileContent, checksum, filePath }
+    }))
   }
 
   // Commit local migration to database
-  async commitLocalMigration ({ filename, checksum }) {
-    // If filename dont have 'xx_timestamp.sql' rename
-    if (filename.split('_').length === 1) {
-      const newFilename = `${now}_${filename}`
-      await rename(`${this.localMigrationsPath}/${filename}`, `${this.localMigrationsPath}/${newFilename}`)
-      filename = newFilename
+  async updateFilename ({ filePath }) {
+    const filename = filePath.split('/').pop()
+    let newFilename = filename
+    let newFilePath = filePath
+
+    // If filename dont have 'timestamp_<name>.sql' rename
+    if (!filename.includes('_')) {
+      newFilename = `${utils.getUtc()}_${filename}`
+      newFilePath = filePath.replace(filename, newFilename)
+      await utils.rename(filePath, newFilePath)
     }
 
+    return { filePath: newFilePath, filename: newFilename }
+  }
+
+  async proccessMigrations ({ localMigrations, dbMigrations }) {
     const client = await this.pg.connect()
     try {
       await client.query('BEGIN')
 
-      const sqlFile = await readFile(`${this.localMigrationsPath}/${filename}`)
-      await client.query(sqlFile)
+      localMigrations.forEach(async localMigration => {
+        const filename = localMigration.filename
+        const checksum = localMigration.checksum
+        const filePath = localMigration.filePath
+        const fileContent = localMigration.fileContent
 
-      const query = `
-        INSERT INTO migrations (filename, checksum)
-        VALUES ('${filename}','${checksum}')`
-      await client.query(query)
+        // Find localMigration in databaseMigration
+        const dbMigration = dbMigrations.filter(migration => migration.filename === filename)[0]
+
+        // Local migration found in database migration
+        if (dbMigration) {
+          // Compare checksum
+          if (dbMigration.checksum !== checksum) throw new Error(`${filename} migration has been applied previously and its content has changed`)
+        } else {
+          // Commit local migration to db
+          const { filename } = await this.updateFilename({ filePath })
+
+          // Commit sql file migrations
+          await client.query(fileContent)
+
+          // Update migrations table
+          const query = `
+            INSERT INTO migrations (filename, checksum)
+            VALUES ('${filename}','${checksum}')`
+          await client.query(query)
+        }
+      })
 
       await client.query('COMMIT')
-      console.log(`Migrations ${filename} created succesfully!`)
+      console.log('Migrations created succesfully!')
     } catch (err) {
       await client.query('ROLLBACK')
       throw new Error(err)
@@ -86,34 +125,11 @@ export class PGMigrations {
     }
   }
 
-  // Commit local migrations to db
-  async checkMigrations () {
-    this.localMigrations.forEach(async filename => {
-      // Check local file
-      if (filename.split('_').length > 2) throw new Error(`${filename} has wrong filename`)
-
-      // Generate checksum of file
-      const checksum = getChecksum(await readFile(`${this.localMigrationsPath}/${filename}`))
-
-      // Find localMigration in databaseMigration
-      const dbMigration = this.dbMigrations.filter(migration => migration.filename === filename)[0]
-
-      // Local migration found in database migration
-      if (dbMigration) {
-        // Compare checksum
-        if (dbMigration.checksum !== checksum) throw new Error(`${filename} migration has been applied previously and its content has changed`)
-      } else {
-        // Commit local migration to db
-        await this.commitLocalMigration({ filename, checksum })
-      }
-    })
-  }
-
   async up () {
     await this.insertMigrationsTable()
-    await this.getLocalMigrations()
-    await this.getDbMigrations()
+    const dbMigrations = await this.getDbMigrations()
+    const localMigrations = await this.getLocalMigrations()
 
-    await this.checkMigrations()
+    await this.proccessMigrations({ localMigrations, dbMigrations })
   }
 }

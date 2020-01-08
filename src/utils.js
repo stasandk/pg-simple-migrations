@@ -31,6 +31,7 @@ export const getChecksum = (str, algorithm, encoding) => {
     .digest(encoding || 'hex')
 }
 
+// With path
 export const rename = (oldName, newName) => {
   return new Promise((resolve, reject) => {
     fs.rename(oldName, newName, (err) => {
@@ -40,7 +41,7 @@ export const rename = (oldName, newName) => {
   })
 }
 
-export const now = () => {
+export const getUtc = () => {
   const date = dayjs().utc().format('YYYYMMDDHHmmssSSS')
   return date
 }
