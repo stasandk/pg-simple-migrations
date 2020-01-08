@@ -3,6 +3,14 @@ import { Pool } from 'pg'
 import path from 'path'
 import * as utils from './utils'
 
+process.on('uncaughtException', (err) => {
+  console.error(err)
+})
+
+process.on('unhandledRejection', (err) => {
+  console.error(err)
+})
+
 // Default pg values
 const defaultConnection = {
   host: '127.0.0.1',
@@ -22,7 +30,7 @@ export class PGSM {
 
     // Find user migrations folder
     this.migrationsTableSqlPath = path.join(__dirname, '/sql/migrations.sql')
-    this.localMigrationsPath = path.join(__dirname.split('/node_modules/')[0], '../', migrationsDir || './')
+    this.localMigrationsPath = path.join(__dirname.split('/node_modules/')[0].slice(1), '../', migrationsDir || './')
     this.localMigrations = []
     this.dbMigrations = []
 
