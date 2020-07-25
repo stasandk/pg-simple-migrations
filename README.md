@@ -22,3 +22,12 @@ The command to run the migration is: ``pgsm``. After that command you need to sp
 },
 
 ```
+## Migrations files
+The .sql files inside you migration folder should be named as following:
+
+```
+00001-tables.sql
+00002-data.sql
+```
+
+The migrations will aply in that order, so if you have more that one file to migrate make sure it ordered wit number prefix correctly
