@@ -7,7 +7,7 @@ const insertTableMigrationsToDb = async () => {
     await client.query('BEGIN')
 
     const query = `
-      CREATE TABLE IF NOT EXISTS migrations (
+      CREATE TABLE IF NOT EXISTS _migrations (
         id serial PRIMARY KEY,
         filename TEXT UNIQUE,
         checksum TEXT UNIQUE,
@@ -27,7 +27,7 @@ const insertTableMigrationsToDb = async () => {
 // Check database has migrations table
 export default async () => {
   const query = `
-    SELECT to_regclass('migrations') as table
+    SELECT to_regclass('_migrations') as table
   `
 
   const { rows } = await client.query(query)

@@ -3,7 +3,6 @@ import * as fs from 'fs'
 import debug from 'debug'
 
 // INI CONSTANT VARIABLES
-const THIS_MIGRATIONS_PATH = '/sql/migrations-table.sql'
 const USER_INPUT = process.argv[2]
 const NAMESPACE_PREFIX = 'postgres-simple-migrations'
 
@@ -44,7 +43,6 @@ const fsAsync = fs.promises
 
 export {
   log,
-  THIS_MIGRATIONS_PATH,
   USER_MIGRATIONS_PATH,
   fsAsync,
 

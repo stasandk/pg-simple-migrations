@@ -16,10 +16,9 @@ const migrateLocalFiles = async (localFilenames: string[]) => {
   if (localFilenames.length === 0)
     throw 'Not found new .sql local migrations files, skipping migration..'
 
-  try {
-    await client.query('BEGIN')
-
-    for (const filename of localFilenames) {
+  for (const filename of localFilenames) {
+    try {
+      await client.query('BEGIN')
       log(`Attempting to migrate ${filename}`)
 
       const fileContent = await fsAsync.readFile(USER_MIGRATIONS_PATH + `/${filename}`, 'utf8')
@@ -27,18 +26,18 @@ const migrateLocalFiles = async (localFilenames: string[]) => {
       await client.query(fileContent)
 
       const query = `
-        INSERT INTO migrations (filename, checksum)
+        INSERT INTO _migrations (filename, checksum)
         VALUES ('${filename}','${fileChecksum}') 
       `
       await client.query(query)
-    }
 
-    await client.query('COMMIT')
-    log('All files successfully migrated')
-  } catch (err) {
-    log('Error migrating files')
-    await client.query('ROLLBACK')
-    throw err
+      await client.query('COMMIT')
+      log(`${filename} successfully migrated`)
+    } catch (err) {
+      log(`Error migrating ${filename}`)
+      await client.query('ROLLBACK')
+      throw err
+    }
   }
 }
 
@@ -46,7 +45,7 @@ const migrateLocalFiles = async (localFilenames: string[]) => {
 const getDbMigrations = async (): Promise<Migration[]> => {
   const query = `
     SELECT *
-    FROM migrations
+    FROM _migrations
   `
   const { rows } = await client.query(query)
   return rows
