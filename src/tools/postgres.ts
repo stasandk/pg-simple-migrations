@@ -1,10 +1,10 @@
 import { Client } from 'pg'
-import { log, POSTGRES_URL, NODE_ENV } from '../config'
+import { log, POSTGRES_URL } from '../config'
 
 const client = new Client({
   connectionString: POSTGRES_URL,
   ssl: {
-    rejectUnauthorized: NODE_ENV !== 'development'
+    rejectUnauthorized: false
   }
 })
 
