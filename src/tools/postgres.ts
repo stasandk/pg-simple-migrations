@@ -1,8 +1,11 @@
 import { Client } from 'pg'
-import { log, POSTGRES_URL } from '../config'
+import { log, POSTGRES_URL, NODE_ENV } from '../config'
 
 const client = new Client({
-  connectionString: POSTGRES_URL
+  connectionString: POSTGRES_URL,
+  ssl: {
+    rejectUnauthorized: NODE_ENV !== 'development'
+  }
 })
 
 // Open and check correct database connection
