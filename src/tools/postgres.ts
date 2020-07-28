@@ -1,8 +1,8 @@
 import { Client } from 'pg'
-import { log, POSTGRES_URL } from '../config'
+import { log, DATABASE_URL } from '../config'
 
 const client = new Client({
-  connectionString: POSTGRES_URL,
+  connectionString: DATABASE_URL,
   ssl: {
     rejectUnauthorized: false
   }

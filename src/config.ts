@@ -7,7 +7,7 @@ const USER_INPUT = process.argv[2]
 const NAMESPACE_PREFIX = 'postgres-simple-migrations'
 
 // GET ENVIRONMENT VARIABLES
-const { POSTGRES_URL } = process.env
+const { DATABASE_URL } = process.env
 
 // CREATE LOGGER
 debug.enable(NAMESPACE_PREFIX)
@@ -15,7 +15,7 @@ const log = debug(NAMESPACE_PREFIX)
 
 // CHECK IF ENV VARIABLES ARE SET
 ;[
-  'POSTGRES_URL'
+  'DATABASE_URL'
 ].forEach(key => {
   if (!process.env[key]) {
     log(`⚠️ env var: ${key} not defined`)
@@ -47,5 +47,5 @@ export {
   fsAsync,
 
   // Env
-  POSTGRES_URL
+  DATABASE_URL
 }
