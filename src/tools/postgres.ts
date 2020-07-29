@@ -1,11 +1,11 @@
 import { Client } from 'pg'
-import { log, DATABASE_URL } from '../config'
+import { log, NODE_ENV, DATABASE_URL } from '../config'
 
 const client = new Client({
   connectionString: DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
+  ssl: NODE_ENV === 'production' ?
+    { rejectUnauthorized: false } :
+    false
 })
 
 // Open and check correct database connection

@@ -7,7 +7,7 @@ const USER_INPUT = process.argv[2]
 const NAMESPACE_PREFIX = 'postgres-simple-migrations'
 
 // GET ENVIRONMENT VARIABLES
-const { DATABASE_URL } = process.env
+const { NODE_ENV, DATABASE_URL } = process.env
 
 // CREATE LOGGER
 debug.enable(NAMESPACE_PREFIX)
@@ -47,5 +47,6 @@ export {
   fsAsync,
 
   // Env
-  DATABASE_URL
+  DATABASE_URL,
+  NODE_ENV
 }
