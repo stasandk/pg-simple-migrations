@@ -1,6 +1,6 @@
-# pg-simple-migrations
+# Postgres migrations
 
-Postgres database simple migrations.
+Very simple postgresSQL migration library. Only allowed 'up' migrations, that means that is not possible to do rollback or create 'down' migration. If you need to change something about before migration you need crete new .sql file and migrate.
 
 ## Install
 
